@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Счетчик до Нового 2026 Года</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #003366, #000033);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            color: #FFD700;
+        }
+        
+        .countdown {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .time-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .time-block {
+            background: rgba(0, 25, 50, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 70px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .time-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+        
+        .time-label {
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        .separator {
+            font-size: 28px;
+            font-weight: bold;
+            color: #FFD700;
+            display: flex;
+            align-items: center;
+        }
+        
+        @media (max-width: 600px) {
+            .time-section {
+                flex-wrap: wrap;
+            }
+            
+            .time-block {
+                min-width: 60px;
+                padding: 10px;
+            }
+            
+            .time-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ДО НОВОГО ГОДА ОСТАЛОСЬ:</h1>
+        <div class="countdown">
+            <div class="time-section">
+                <div class="time-block">
+                    <div class="time-value" id="months">--</div>
+                    <div class="time-label">Месяцев</div>
+                </div>
+                <div class="time-block">
+                    <div class="time-value" id="days">--</div>
+                    <div class="time-label">Дней</div>
+                </div>
+            </div>
+            <div class="time-section">
+                <div class="time-block">
+                    <div class="time-value" id="hours">--</div>
+                    <div class="time-label">Часов</div>
+                </div>
+                <div class="separator">:</div>
+                <div class="time-block">
+                    <div class="time-value" id="minutes">--</div>
+                    <div class="time-label">Минут</div>
+                </div>
+                <div class="separator">:</div>
+                <div class="time-block">
+                    <div class="time-value" id="seconds">--</div>
+                    <div class="time-label">Секунд</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const newYear = new Date(2026, 0, 1, 0, 0, 0, 0); // 1 января 2026
+            
+            const diff = newYear - now;
+            
+            if (diff <= 0) {
+                document.getElementById('months').textContent = '00';
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+            
+            // Расчет составляющих времени
+            const seconds = Math.floor(diff / 1000) % 60;
+            const minutes = Math.floor(diff / (1000 * 60)) % 60;
+            const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+            
+            // Для расчета месяцев и дней нужно учитывать разную длительность месяцев
+            let months = 0;
+            let days = 0;
+            
+            const startDate = new Date(now);
+            while (startDate < newYear) {
+                // Добавляем месяц к начальной дате
+                startDate.setMonth(startDate.getMonth() + 1);
+                
+                if (startDate < newYear) {
+                    months++;
+                } else {
+                    // Если превысили, откатываем на месяц и вычисляем дни
+                    startDate.setMonth(startDate.getMonth() - 1);
+                    days = Math.floor((newYear - startDate) / (1000 * 60 * 60 * 24));
+                    break;
+                }
+            }
+            
+            // Обновление отображаемых значений
+            document.getElementById('months').textContent = months.toString().padStart(2, '0');
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        // Запуск счетчика и обновление каждую секунду
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
